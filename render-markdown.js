@@ -95,6 +95,7 @@ async function readLines(filename) {
 
 async function compileMarkdown(text) {
   return new Promise((resolve, reject) => {
+    // Start pandoc
     const pandoc = child_process.exec('pandoc', [
       '-f',
       'markdown',
@@ -104,6 +105,7 @@ async function compileMarkdown(text) {
 
     let htmlOutput = '';
 
+    // Pass the text into pandoc, store the intermediate results, and resolve when done
     pandoc.stdout.on('data', data => (htmlOutput += data));
     pandoc.on('close', () => resolve(htmlOutput));
     pandoc.on('error', error => reject(error));

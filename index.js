@@ -5,13 +5,15 @@ const renderMarkdownMiddleware = require('./render-markdown-middleware');
 const app = express();
 
 // Require a root markdown file to process
-if (!process.argv[2]) {
+const rootFile = process.argv[2];
+if (!rootFile) {
   console.log(`Usage: markdown-author <index.md>`);
   process.exit(-1);
 }
 
 // Serve static files in case the document refers to any
-// app.use(express.static(__dirname));
+const rootDir = path.dirname(path.resolve(rootFile));
+app.use(express.static(rootDir));
 
 // Launch a text editor at the chosen line/column number
 // The editor is determined by looking at running processes,
@@ -22,7 +24,7 @@ if (!process.argv[2]) {
 app.use('/__open_editor', launchMiddleware());
 
 // Return the rendered document
-app.use('/', renderMarkdownMiddleware(process.argv[2]));
+app.use('/', renderMarkdownMiddleware(rootFile));
 
 const port = process.env.PORT || 5000;
 app.listen(port);
