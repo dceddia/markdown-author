@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+const child_process = require('child_process');
 
 // Return the contents of a file as a string,
 // recursively including any referenced files
@@ -92,6 +93,27 @@ async function readLines(filename) {
   });
 }
 
+async function compileMarkdown(text) {
+  return new Promise((resolve, reject) => {
+    const pandoc = child_process.exec('pandoc', [
+      '-f',
+      'markdown',
+      '-t',
+      'html5'
+    ]);
+
+    let htmlOutput = '';
+
+    pandoc.stdout.on('data', data => (htmlOutput += data));
+    pandoc.on('close', () => resolve(htmlOutput));
+    pandoc.on('error', error => reject(error));
+
+    pandoc.stdin.write(text);
+    pandoc.stdin.end();
+  });
+}
+
 module.exports = {
-  readMarkdownWithIncludes
+  readMarkdownWithIncludes,
+  compileMarkdown
 };

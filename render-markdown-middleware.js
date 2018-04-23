@@ -1,11 +1,14 @@
-const { readMarkdownWithIncludes } = require('./render-markdown');
+const {
+  readMarkdownWithIncludes,
+  compileMarkdown
+} = require('./render-markdown');
 
 function renderMarkdownMiddleware(rootFile) {
   return (req, res, next) => {
     // Render the Markdown, starting at the rootFile, and return the result
-    readMarkdownWithIncludes(rootFile).then(text => {
-      res.send(text);
-    });
+    readMarkdownWithIncludes(rootFile)
+      .then(compileMarkdown)
+      .then(text => res.send(text));
   };
 }
 
