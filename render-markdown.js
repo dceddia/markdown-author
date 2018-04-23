@@ -5,21 +5,17 @@ const child_process = require('child_process');
 
 // Return the contents of a file as a string,
 // recursively including any referenced files
-async function readMarkdownWithIncludes(filename, depth = 0) {
-  try {
-    const isCode = isCodeFile(filename);
-    let lines = await readLines(filename);
+async function readMarkdownWithIncludes(filename, basedir, depth = 0) {
+  const isCode = isCodeFile(filename);
+  let lines = await readLines(filename);
 
-    // Wrap the lines with a code block if it's a code file
-    lines = wrapWithCodeBlock({ filename, isCode, lines, depth });
-    lines = wrapWithDiv({ filename, isCode, lines, depth });
+  // Wrap the lines with a code block if it's a code file
+  lines = wrapWithCodeBlock({ filename, isCode, lines, depth });
+  lines = wrapWithDiv({ filename, isCode, lines, depth });
 
-    return Promise.all(lines.map(line => processLine(line, depth))).then(
-      lines => lines.join('\n')
-    );
-  } catch (e) {
-    console.log(e);
-  }
+  return Promise.all(lines.map(line => processLine(line, depth, basedir))).then(
+    lines => lines.join('\n') + '\n' // Add an extra newline
+  );
 }
 
 function isCodeFile(filename) {
@@ -27,12 +23,16 @@ function isCodeFile(filename) {
   return !plainFileTypes.includes(path.extname(filename));
 }
 
-async function processLine(line, depth) {
+async function processLine(line, depth, basedir) {
   // Read in the referenced file if there is one, replacing
   // this line with the contents of that file.
   const includedFilename = getIncludedFilename(line);
   if (includedFilename) {
-    return await readMarkdownWithIncludes(includedFilename, depth++);
+    return await readMarkdownWithIncludes(
+      path.resolve(basedir, includedFilename),
+      basedir,
+      depth++
+    );
   }
 
   return line;

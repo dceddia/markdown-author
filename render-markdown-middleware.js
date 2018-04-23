@@ -1,3 +1,4 @@
+const path = require('path');
 const {
   readMarkdownWithIncludes,
   compileMarkdown
@@ -6,7 +7,8 @@ const {
 function renderMarkdownMiddleware(rootFile, filesForHead) {
   return (req, res, next) => {
     // Render the Markdown, starting at the rootFile, and return the result
-    readMarkdownWithIncludes(rootFile)
+    const basedir = path.dirname(path.resolve(rootFile));
+    readMarkdownWithIncludes(rootFile, basedir)
       .then(markdown => compileMarkdown(markdown, filesForHead))
       .then(text => res.send(text));
   };
