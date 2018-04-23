@@ -1,0 +1,17 @@
+{
+  "name": "markdown-author",
+  "version": "0.0.1",
+  "description": "Preview rendered Markdown in a browser. Suppors multi-file Markdown (with includes), live reloading, and can open your editor to specific line numbers.\"",
+  "main": "index.js",
+  "repository": "https://github.com/dceddia/markdown-author",
+  "author": "Dave Ceddia <dave@daveceddia.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "launch-editor": "^2.2.1",
+    "launch-editor-middleware": "^2.2.1"
+  }
+}
