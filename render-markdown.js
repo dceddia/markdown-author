@@ -93,15 +93,18 @@ async function readLines(filename) {
   });
 }
 
-async function compileMarkdown(text) {
+async function compileMarkdown(text, headerFiles = []) {
   return new Promise((resolve, reject) => {
+    // Build a list of headers to include. The resulting arguments to pandoc will look like
+    // -H file1 -H file2 ...
+    const headers = headerFiles.reduce((args, filename) => {
+      return [...args, '-H', filename];
+    }, []);
+
+    const args = ['-f', 'markdown', '-t', 'html5', ...headers];
+
     // Start pandoc
-    const pandoc = child_process.exec('pandoc', [
-      '-f',
-      'markdown',
-      '-t',
-      'html5'
-    ]);
+    const pandoc = child_process.spawn('pandoc', args);
 
     let htmlOutput = '';
 

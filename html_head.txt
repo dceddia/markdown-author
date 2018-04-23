@@ -1,0 +1,7 @@
+<style>
+  body {
+    font-family: "Crimson Text";
+    font-size: 18px;
+    line-height: 1.4em;
+  }
+</style>

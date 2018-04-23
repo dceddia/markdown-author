@@ -24,7 +24,8 @@ app.use(express.static(rootDir));
 app.use('/__open_editor', launchMiddleware());
 
 // Return the rendered document
-app.use('/', renderMarkdownMiddleware(rootFile));
+const filesForHead = [path.join(__dirname, 'html_head.txt')];
+app.get('/', renderMarkdownMiddleware(rootFile, filesForHead));
 
 const port = process.env.PORT || 5000;
 app.listen(port);
