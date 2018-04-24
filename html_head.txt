@@ -3,5 +3,63 @@
     font-family: "Crimson Text";
     font-size: 18px;
     line-height: 1.4em;
+    margin: 0 auto;
+    max-width: 760px;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  div.sourceCode {
+    background-color: #f1f1f1;
+    padding: 0 10px;
+  }
+
+  .tooltip {
+    display: none;
+  }
+
+  /* Show tooltip on hover */
+  div.file {
+    position: relative;
+  }
+  div.file.hovered > .tooltip {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -15px;
+    width: 8px;
+    background-color: red;
   }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let lastHovered = null;
+
+  // Show/hide tooltips as sections are moused over
+  document.querySelectorAll('.file').forEach(function(file) {
+    file.addEventListener('mouseover', function(e) {
+      e.stopPropagation();
+      file.classList.add('hovered');
+      if(lastHovered !== file) {
+        if(lastHovered) {
+          lastHovered.classList.remove('hovered');
+        }
+        lastHovered = file;
+      }
+    });
+
+    file.addEventListener('mouseleave', function(e) {
+      file.classList.remove('hovered');
+    });
+
+    // Open an editor when a section is double-clicked
+    file.addEventListener('dblclick', function(e) {
+      fetch(`/__open_editor?file=${encodeURIComponent(file.getAttribute('data-filename'))}:1:1`);
+    });
+  });
+})
+</script>

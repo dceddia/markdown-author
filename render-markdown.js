@@ -31,7 +31,7 @@ async function processLine(line, depth, basedir) {
     return await readMarkdownWithIncludes(
       path.resolve(basedir, includedFilename),
       basedir,
-      depth++
+      depth + 1
     );
   }
 
@@ -68,6 +68,7 @@ function wrapWithDiv({ filename, lines, isCode, depth }) {
     `<div class="file ${
       isCode ? 'file--code' : ''
     }" data-filename="${filename}">`,
+    `<div class="tooltip">${filename}</div>`,
     ...lines,
     `</div>`
   ];
