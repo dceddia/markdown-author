@@ -58,7 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Open an editor when a section is double-clicked
     file.addEventListener('dblclick', function(e) {
-      fetch(`/__open_editor?file=${encodeURIComponent(file.getAttribute('data-filename'))}:1:1`);
+      e.stopPropagation();
+
+      let rect = file.getBoundingClientRect();
+      let percent = e.layerY / rect.height;
+      fetch(`/__open_editor?file=${encodeURIComponent(file.getAttribute('data-filename'))}:1:1&percent=${percent}`);
     });
   });
 })

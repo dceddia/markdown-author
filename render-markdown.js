@@ -58,6 +58,22 @@ function wrapWithCodeBlock({ filename, lines, isCode }) {
   return ['``` ' + lang, ...lines, '```'];
 }
 
+function wrapEachLineWithSpan({ filename, lines, isCode, depth }) {
+  // Don't wrap lines of code
+  if (isCode) {
+    return lines;
+  }
+
+  return lines.map((line, index) => {
+    // Don't wrap include lines
+    if (line.startsWith('<<(') || line.startsWith('<<[')) {
+      return line;
+    }
+
+    return `<span class="line" data-lineno="${index + 1}">${line}</span>`;
+  });
+}
+
 function wrapWithDiv({ filename, lines, isCode, depth }) {
   // Don't wrap the entire document in a div
   if (depth === 0) {
@@ -68,7 +84,7 @@ function wrapWithDiv({ filename, lines, isCode, depth }) {
     `<div class="file ${
       isCode ? 'file--code' : ''
     }" data-filename="${filename}">`,
-    `<div class="tooltip">${filename}</div>`,
+    `<div class="tooltip"></div>`,
     ...lines,
     `</div>`
   ];
@@ -121,5 +137,6 @@ async function compileMarkdown(text, headerFiles = []) {
 
 module.exports = {
   readMarkdownWithIncludes,
-  compileMarkdown
+  compileMarkdown,
+  readLines
 };
