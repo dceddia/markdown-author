@@ -118,7 +118,12 @@ async function compileMarkdown(text, headerFiles = []) {
       return [...args, '-H', filename];
     }, []);
 
-    const args = ['-f', 'markdown', '-t', 'html5', ...headers];
+    const args = [
+      '-f', 'markdown',
+      '-t', 'html5',
+      '--highlight-style', 'custom_tango_colors.theme',
+      '--syntax-definition', 'jsx.xml',
+      ...headers];
 
     // Start pandoc
     const pandoc = child_process.spawn('pandoc', args);
